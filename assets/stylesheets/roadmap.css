@@ -10,6 +10,7 @@
   display: none;
 }
 .popover {
+  width: 200px;
   padding: 1px;
   text-align: left;
   white-space: normal;

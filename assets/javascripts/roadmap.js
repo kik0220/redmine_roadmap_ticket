@@ -5,7 +5,7 @@
       var tickets = $('#roadmap .hascontextmenu');
       tickets.mouseenter(function(){mouse_enter(this);});
       tickets.mouseleave(function(){mouse_leave(this);});
-      $(tickets).popover({'trigger': 'manual', 'placement': 'bottom', 'html': true, 'content': function(){return get_content(this);}});
+      $(tickets).popover({'trigger': 'manual', 'placement': 'bottom', container: '#roadmap', 'html': true, 'content': function(){return get_content(this);}});
     }
   }
 
@@ -22,6 +22,7 @@
     try{
       link = content.getElementsByTagName('a')[0].href;
     } catch(e) {return;}
+//    $.get(link+'.json?key=SET HERE API KEY', function(data){
     $.get(link+'.json', function(data){
       var detail = '';
       detail += 'AssignedTo:'+data.issue.assigned_to.name+'<br/>';
@@ -31,10 +32,10 @@
     });
     return '<span id="roadmap_ticket_float">Loading</span>';
   }
-  
+
   function main() {
     if($('#roadmap') === null){return;}
-    find_contents(); 
+    find_contents();
   }
 
   $(window).load(main);
