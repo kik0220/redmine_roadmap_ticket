@@ -1,4 +1,4 @@
-Redmine Roadmap Ticket Float plugin
+Redmine Roadmap Ticket plugin
 =============================
 
-Redmineのロードマップでチケットにカーソルを合わせると、REST API経由で情報を取得してフロート表示します。
+RedmineのロードマップでREST API経由で情報を取得して表示します。

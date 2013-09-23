@@ -1,42 +1,39 @@
-(function($) {
-  function find_contents() {
-    var root = $('#roadmap');
-    if (root) {
-      var tickets = $('#roadmap .hascontextmenu');
-      tickets.mouseenter(function(){mouse_enter(this);});
-      tickets.mouseleave(function(){mouse_leave(this);});
-      $(tickets).popover({'trigger': 'manual', 'placement': 'bottom', container: '#roadmap', 'html': true, 'content': function(){return get_content(this);}});
+(function() {
+  'use strict';
+  function find_contents(){
+    var root = document.getElementById('roadmap');
+    if(root === null){return;}
+    var tickets = root.getElementsByClassName('hascontextmenu');
+    for(var i = 0; i < tickets.length; i++){
+      var ticket = tickets[i];
+      get_content(ticket);
     }
   }
 
-  function mouse_enter(content){
-    $(content).popover('show');
-  }
-
-  function mouse_leave(content){
-    $(content).popover('hide');
-  }
-
-  function get_content(content){
+  function get_content(ticket){
     var link;
     try{
-      link = content.getElementsByTagName('a')[0].href;
+      link = ticket.getElementsByTagName('a')[0].href;
     } catch(e) {return;}
-//    $.get(link+'.json?key=SET HERE API KEY', function(data){
-    $.get(link+'.json', function(data){
+    var xhr = new XMLHttpRequest(ticket);
+//  xhr.open("GET", link+'.json?key=SET HERE API KEY', true);
+    xhr.open("GET", link+'.json', true);
+    xhr.onload = function(){
+      if(xhr.status !== 200){return;}
+      var data = JSON.parse(xhr.responseText);
       var detail = '';
-      detail += 'AssignedTo:'+data.issue.assigned_to.name+'<br/>';
-      detail += 'Status:'+data.issue.status.name+'<br/>';
-      detail += 'Progress:'+data.issue.done_ratio+'%<br/>';
-      $('#roadmap_ticket_float').replaceWith(detail);
-    });
-    return '<span id="roadmap_ticket_float">Loading</span>';
+      detail += '<td style="width: 6em;">'+(data.issue.assigned_to !== undefined ? data.issue.assigned_to.name : "")+'</td>';
+      detail += '<td style="width: 4em;">'+data.issue.status.name+'</td>';
+      detail += '<td style="width: 2em;">'+data.issue.done_ratio+'%</td>';
+      ticket.innerHTML += detail;
+    };
+    setTimeout(xhr.send(), 3000);
   }
 
   function main() {
-    if($('#roadmap') === null){return;}
+    if(document.getElementById('roadmap') === null){return;}
     find_contents();
   }
 
-  $(window).load(main);
-})(jQuery);
+  document.addEventListener ? window.addEventListener('load', main) : window.attachEvent('onload', main);
+})();
